@@ -1,0 +1,62 @@
+services:
+  symfony:
+    container_name: Symfony-installer
+    build:
+      context: ./
+      dockerfile: docker/php/symfony/Dockerfile
+      args:
+        WORKDIR: ${WORKDIR}
+    environment:
+      WORKDIR: ${WORKDIR}
+    volumes:
+      - ./:${WORKDIR}
+
+  php:
+    extra_hosts:
+      - host.docker.internal: host-gateway
+    container_name: php_${PROJECT_NAME}
+    build:
+      context: ./
+      dockerfile: docker/php/Dockerfile
+      args:
+        WORKDIR: ${WORKDIR}
+        PHP_IDE_CONFIG: serverName=docker
+    volumes:
+      - ./:${WORKDIR}
+  
+  nginx:
+    image: nginx:latest
+    container_name: nginx_${PROJECT_NAME}
+    environment:
+      WORKDIR: ${WORKDIR}
+      HTTP_PORT: ${HTTP_PORT}
+      HTTPS_PORT: ${HTTPS_PORT}
+    ports:
+      - ${HTTP_PORT}:80
+      - ${HTTPS_PORT}:443
+    volumes:
+      - ./:${WORKDIR}
+      - ./docker/nginx:/etc/nginx/conf.d
+      - ./docker/nginx/project.conf.template:/etc/nginx/templates/project.conf.template
+      - ./logs/nginx:/var/log/nginx
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres_${PROJECT_NAME}
+    ports:
+      - ${POSTGRES_PORT}:5432
+    environment:
+      POSTGRES_ROOT_PASSWORD: ${POSTGRES_ROOT_PASSWORD:-rootpass}
+      POSTGRES_DATABASE: ${POSTGRES_DATABASE:-project_db}
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
+  mailer:
+    image: axllent/mailpit
+    ports:
+      - "1025"
+      - "8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
