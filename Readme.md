@@ -17,6 +17,8 @@ docker compose --env-file .env.install up --build
 
 ## Use
 
+Don't  forget </red> remove Symfony-installer from docker-compose.yaml file
+
 ### Unix system
   ```
   ./container --start --aditional-flag(if nessesary)
