@@ -51,5 +51,4 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
     volumes:
-      - ./docker/database_data:/var/lib/postgresql/data:rw
-
+      - ./docker/database/${PROJECT_NAME}:/var/lib/postgresql/data:rw

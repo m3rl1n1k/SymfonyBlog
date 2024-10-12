@@ -15,5 +15,7 @@ RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-di
 
 ENTRYPOINT /bin/bash ${WORKDIR}/docker/php/symfony/symfony-installer.sh
 
+RUN chmod 754 -R ${WORKDIR}
+
 CMD php-fpm
 EXPOSE 9000
