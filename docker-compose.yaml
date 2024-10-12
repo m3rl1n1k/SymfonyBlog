@@ -13,7 +13,7 @@ services:
 
   php:
     extra_hosts:
-      - host.docker.internal: host-gateway
+      host.docker.internal: host-gateway
     container_name: php_${PROJECT_NAME}
     build:
       context: ./
@@ -51,12 +51,5 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
     volumes:
-      - database_data:/var/lib/postgresql/data:rw
-  mailer:
-    image: axllent/mailpit
-    ports:
-      - "1025"
-      - "8025"
-    environment:
-      MP_SMTP_AUTH_ACCEPT_ANY: 1
-      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+      - ./database_data:/var/lib/postgresql/data:rw
+
