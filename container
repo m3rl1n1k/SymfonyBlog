@@ -4,28 +4,32 @@
 COMMAND=$1
 ARGUMENT=$2
 
-if [[ $COMMAND == "--start" ]]; then
-    docker compose --env-file .env.local up $ARGUMENT
-fi
-if [[ $COMMAND == "--restart" ]]; then
-    docker compose --env-file .env.local restart
-fi
-if [[ $COMMAND == "--stop" ]]; then
-    docker compose --env-file .env.local stop
-fi
-if [[ $COMMAND == "--connect" ]]; then
-    docker compose --env-file .env.local exec -it "$ARGUMENT" /bin/bash
-fi
-if [[ $COMMAND == "--build" ]]; then
-    docker compose --env-file .env.install up --build $ARGUMENT
-fi
-if [[ $COMMAND == "--kill" ]]; then
+declare -A commands
+
+commands[--start]="docker compose --env-file .env.local up $ARGUMENT"
+commands[--restart]="docker compose --env-file .env.local restart"
+commands[--stop]="docker compose --env-file .env.local stop"
+commands[--connect]="docker compose --env-file .env.local exec -it \"$ARGUMENT\" /bin/bash"
+commands[--build]="docker compose --env-file .env.install up --build $ARGUMENT"
+commands[--kill]="killContainers"
+commands[--remove]="removeContainers"
+
+function runCommand() {
+    ${commands[$COMMAND]}
+}
+
+function killContainers() {
     for container in ${ARGUMENT[@]}; do
-    docker kill $container
+        docker kill "$container"
     done
-fi
-if [[ $COMMAND == "--remove" ]]; then
+}
+
+function removeContainers() {
     for container in ${ARGUMENT[@]}; do
-    docker remove $container
+        docker rm "$container"
     done
-fi
+}
+
+# Викликаємо runCommand, щоб виконати команду
+runCommand
+
