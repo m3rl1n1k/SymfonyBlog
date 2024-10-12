@@ -22,7 +22,6 @@ else
 
     rm -rf $install_path/.git
     rm -rf $install_path/docker*
-    rm -rf $install_path/compose*
 
     echo -e "${On_Green}   Generate .env.local file   ${NC}"
 
@@ -44,7 +43,7 @@ else
 
     cat docker/configs/php/.env.default >> $install_path/.env.local
 
-    echo -e "DATABASE_URL=\"postgresql://${POSTGRES_USER}:${POSTGRES_USER_PASSWORD}@postgres/${POSTGRES_USER_DATABASE}?serverVersion=13&charset=utf8mb4\"" >> $install_path/.env.local
+    echo -e "DATABASE_URL=\"postgresql://${POSTGRES_USER}:${POSTGRES_USER_PASSWORD}@postgres/${POSTGRES_USER_DATABASE}?serverVersion=13\"" >> $install_path/.env.local
     echo -e "${On_Green}   Generate .gitignore file   ${NC}"
 
     cat ${WORKDIR}/.gitignore >> $install_path/.gitignore
@@ -62,5 +61,6 @@ else
       git add $target_path/*
 
     echo -e "${On_Green}   Install complete successful   ${NC}"
+		chmod 777 -R $target_path
 fi
-tail -f /dev/null
+
