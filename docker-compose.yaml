@@ -1,16 +1,4 @@
 services:
-  symfony:
-    container_name: Symfony-installer
-    build:
-      context: ./
-      dockerfile: docker/php/symfony/Dockerfile
-      args:
-        WORKDIR: ${WORKDIR}
-    environment:
-      WORKDIR: ${WORKDIR}
-    volumes:
-      - ./:${WORKDIR}
-
   php:
     extra_hosts:
       host.docker.internal: host-gateway
